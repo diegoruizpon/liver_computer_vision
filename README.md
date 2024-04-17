@@ -14,13 +14,49 @@ In this work, the HCC-TACE collection is used, presented in paper [pap]. The dat
 
 ## Dataset
 
-Data is obtained through The Cancer Imaging Archive (TCIA) [ref] which contains numerous datasets for different types of cancer. In this case, the dataset is the one mentioned before \textit{HCC-TACE-Seg | Multimodality annotated HCC cases with and without advanced imaging segmentation}. The dataset has to be downloaded through the NBIA Data Retriever, and contains 51,968 images in DICOM format and has a size of 28.57 GB. The CT scans can be visualized online through the National Cancer Institute [ref] searching for the HCC-TACE dataset. As example, a sample of the image  \ref{fig:sample_pre}
+Data is obtained through The Cancer Imaging Archive (TCIA) [ref] which contains numerous datasets for different types of cancer. In this case, the dataset is the one mentioned before \textit{HCC-TACE-Seg | Multimodality annotated HCC cases with and without advanced imaging segmentation}. The dataset has to be downloaded through the NBIA Data Retriever, and contains 51,968 images in DICOM format and has a size of 28.57 GB. The CT scans can be visualized online through the National Cancer Institute [ref] searching for the HCC-TACE dataset. As example, a sample of the image of a section from the pre-treatment scan for patient number 26 in the database, without and with the masks in the segmentation. 
 
-\begin{figure}[h]
-\centering
-\includegraphics[width = 0.5\textwidth]{figures/sample_image_con_seg_25.png}
-\caption{Patient number 25 pre-treatment image with and without segmentation}
-\label{fig:sample_pre}
-\end{figure}
+![sample_image_con_seg_25.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/803b6f16-1722-4885-9c01-38f208eda9f3/4caa95b0-c98f-4148-a1a0-c10f60eeb1f6/sample_image_con_seg_25.png)
 
-The computer tomography scans contain several sections of the patient's body, so the ones shwoing the cancerous mass have to be searched among all of the images in each series, which will contain a quantity of images ranging from 30 to 100 separate sections.
+The computer tomography scans contain several sections of the patient's body, so the ones shwoing the cancerous mass have to be searched among all of the images in each series, which will contain a quantity of images ranging from 30 to 100 separate sections. As the files are in DICOM format, the first step taken is to store the pixel arrays and the segmentation masks sepparately to quicken the load time and work faster with the data. Still, given the size of the dataset, the reslulting files are of a size of about 5GB each, so they are not included in the repository. 
+
+## Approaches
+
+At first, the idea was to write an algorithm common to be able to segment the tumor on the post-treatment CT scan, to be able to measure the progression of the patient. This was soon met to be a hard task so several methods are presented to compare different approachs that could be used or further developped. 
+
+The structured followed is normally the following:
+
+1. Find the section in the pre-treatment scan where the tumor is more visible (higher pixel count) 
+2. Image preprocessing
+3. Search for closes section in post-TACE scan
+4. Create a region of interest around the tumor 
+5. Study region of interest aiming at segmenting the tumor
+6. Comparing tumor size to measure size reduction 
+
+### Contour segmentation
+
+This method is developed with a sample chosen at random, in this case, 26. 
+
+For the first step, the segmentation mask corresponding to the tumor with the highest pixel count is searched, and then the corresponding pre-treatment scan is searched with a UID code. 
+
+The next step is to find a section in the post-treatment scan at ideally the same section in the body of the patient, but realistically in the closest match. To find this match, at first, methods like SIFT were used to try to find RELEVANT POINTS? but due to it’s poor performance, the final method chosen was Structural Similarity Index (SSI), which accounts for texture as well as pixel difference. 
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/803b6f16-1722-4885-9c01-38f208eda9f3/438964a0-e553-41fa-b942-004cb3d2e6f4/Untitled.png)
+
+A very clear example from the [scikit-image documentation](https://scikit-image.org/docs/stable/auto_examples/transform/plot_ssim.html) is shown above, where MSE is equal in both modified images but SSI is notable higher for the second. As example from the HCC-TACE database, the closest image found for the section with most tumor visible is shown below. 
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/803b6f16-1722-4885-9c01-38f208eda9f3/fb07798c-d91f-4e80-bcbe-de7eb2ef6032/Untitled.png)
+
+The section is not exactly the same, but they are not far from each other and so cosidered as valid for the work done further. Also, in the post-treatment the tumor can be seen more clearly, which will help for the next steps. 
+
+Once the closest image has been found for every sample, the next step is to determine an area of interest. For this, given the tumor contour, a box around it giving some margins to account for factors like change of position between scans or tumor growth. This selection of a smaller area is aimed making the following segmentation easier. 
+
+For the given tumor mass, adding the margins, the window obtained is the follwing for the post-treatment scan. As it can be seen, the tumor is not centered, due to some of the factors mentioned before. 
+
+IMAGEN WINDOW
+
+Once a the window is done for the last scan, the next objective is to segment the tumor to be able to compare against the pre-treatment size. Alinear imágenes ?? Given the image, it is clear that the tumor has a different texture than the rest of the body. The approach taken is to use an edge detector to capture this difference, in this case the Canny edge detector. 
+
+As seen in the image, this results in a concentration of edges in the tumor area, that are then grouped to define a mask around the cancerous mass. 
+
+Some of the post-treatment CT scans are done with contrast and the tumor is distiguishible from the background in a clear way. For this, method the patient number 26 is used.
