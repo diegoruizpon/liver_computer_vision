@@ -16,7 +16,7 @@ In this work, the HCC-TACE collection is used, presented in paper [pap]. The dat
 
 Data is obtained through The Cancer Imaging Archive (TCIA) [ref] which contains numerous datasets for different types of cancer. In this case, the dataset is the one mentioned before \textit{HCC-TACE-Seg | Multimodality annotated HCC cases with and without advanced imaging segmentation}. The dataset has to be downloaded through the NBIA Data Retriever, and contains 51,968 images in DICOM format and has a size of 28.57 GB. The CT scans can be visualized online through the National Cancer Institute [ref] searching for the HCC-TACE dataset. As example, a sample of the image of a section from the pre-treatment scan for patient number 26 in the database, without and with the masks in the segmentation. 
 
-![sample_image_con_seg_25.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/803b6f16-1722-4885-9c01-38f208eda9f3/4caa95b0-c98f-4148-a1a0-c10f60eeb1f6/sample_image_con_seg_25.png)
+![sample_image_con_seg_25.png](readme_images/sample_image_con_seg_25.png)
 
 The computer tomography scans contain several sections of the patient's body, so the ones shwoing the cancerous mass have to be searched among all of the images in each series, which will contain a quantity of images ranging from 30 to 100 separate sections. As the files are in DICOM format, the first step taken is to store the pixel arrays and the segmentation masks sepparately to quicken the load time and work faster with the data. Still, given the size of the dataset, the reslulting files are of a size of about 5GB each, so they are not included in the repository. 
 
