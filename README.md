@@ -41,11 +41,11 @@ For the first step, the segmentation mask corresponding to the tumor with the hi
 
 The next step is to find a section in the post-treatment scan at ideally the same section in the body of the patient, but realistically in the closest match. To find this match, at first, methods like SIFT were used to try to find RELEVANT POINTS? but due to it’s poor performance, the final method chosen was Structural Similarity Index (SSI), which accounts for texture as well as pixel difference. 
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/803b6f16-1722-4885-9c01-38f208eda9f3/438964a0-e553-41fa-b942-004cb3d2e6f4/Untitled.png)
+![Untitled](readme_images/ssim.png)
 
 A very clear example from the [scikit-image documentation](https://scikit-image.org/docs/stable/auto_examples/transform/plot_ssim.html) is shown above, where MSE is equal in both modified images but SSI is notable higher for the second. As example from the HCC-TACE database, the closest image found for the section with most tumor visible is shown below. 
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/803b6f16-1722-4885-9c01-38f208eda9f3/fb07798c-d91f-4e80-bcbe-de7eb2ef6032/Untitled.png)
+![Untitled](readme_images/closest_img.png)
 
 The section is not exactly the same, but they are not far from each other and so cosidered as valid for the work done further. Also, in the post-treatment the tumor can be seen more clearly, which will help for the next steps. 
 
