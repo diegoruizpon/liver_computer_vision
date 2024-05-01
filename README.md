@@ -12,7 +12,7 @@ Data is obtained through The Cancer Imaging Archive ([TCIA](https://www.cancerim
 
 <img src="readme_images/sample_image_con_seg_25.png" width="600"  />
 
-The computer tomography scans contain several sections of the patient's body, so the ones showing the cancerous mass have to be searched among all of the images in each series, which will contain a quantity of images ranging from 30 to 100 separate sections. As the files are in DICOM format, the first step taken is to store the pixel arrays and the segmentation masks sepparately to quicken the load time and work faster with the data. Still, given the size of the dataset, the reslulting files are of a size of about 5GB each, so they are not included in the repository. Instead, a sample of 3 patients is included (2, 26, 101).
+The computer tomography scans contain several sections of the patient's body, so the ones showing the cancerous mass have to be searched among all of the images in each series, which will contain a quantity of images ranging from 30 to 100 separate sections. As the files are in DICOM format, the first step taken is to store the pixel arrays and the segmentation masks sepparately to quicken the load time and work faster with the data. Still, given the size of the dataset, the reslulting files are of a size of about 5GB each, so they are not included in the repository. Instead, a sample of 3 patients is included (2, 26, 101) in a drive, with a size of around 700Mb [Sample dataset](https://drive.google.com/drive/folders/1ycAqSfPH1NGQhZJndW8pR48lnH2jM2pG?usp=sharing).
 
 ## Approach
 
