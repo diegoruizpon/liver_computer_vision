@@ -14,7 +14,7 @@ In this work, the HCC-TACE collection is used, presented in paper [pap]. The dat
 
 ## Dataset
 
-Data is obtained through The Cancer Imaging Archive (TCIA) [ref] which contains numerous datasets for different types of cancer. In this case, the dataset is the one mentioned before \textit{HCC-TACE-Seg | Multimodality annotated HCC cases with and without advanced imaging segmentation}. The dataset has to be downloaded through the NBIA Data Retriever, and contains 51,968 images in DICOM format and has a size of 28.57 GB. The CT scans can be visualized online through the National Cancer Institute [ref] searching for the HCC-TACE dataset. As example, a sample of the image of a section from the pre-treatment scan for patient number 26 in the database, without and with the masks in the segmentation. 
+Data is obtained through The Cancer Imaging Archive ([TCIA](https://www.cancerimagingarchive.net/collection/hcc-tace-seg/))  which contains numerous datasets for different types of cancer. In this case, the dataset is the one mentioned in *HCC-TACE-Seg | Multimodality annotated HCC cases with and without advanced imaging segmentation*. The dataset has to be downloaded through the NBIA Data Retriever, and contains 51,968 images in DICOM format and has a size of 28.57 GB. The CT scans can be visualized online through the National Cancer Institute ([NCI](https://portal.imaging.datacommons.cancer.gov/explore/)) searching for the HCC-TACE dataset. As example, a sample of the image of a section from the pre-treatment scan for patient number 26 in the database, without and with the masks in the segmentation. 
 
 ![sample_image_con_seg_25.png](readme_images/sample_image_con_seg_25.png)
 
@@ -35,7 +35,7 @@ The structured followed is normally the following:
 
 ### Contour segmentation
 
-This method is developed with a sample chosen at random, in this case, 26. 
+This method is developed with a chosen sample, in this case, 26. 
 
 For the first step, the segmentation mask corresponding to the tumor with the highest pixel count is searched, and then the corresponding pre-treatment scan is searched with a UID code. 
 
@@ -43,7 +43,7 @@ The next step is to find a section in the post-treatment scan at ideally the sam
 
 ![Untitled](readme_images/ssim.png)
 
-A very clear example from the [scikit-image documentation](https://scikit-image.org/docs/stable/auto_examples/transform/plot_ssim.html) is shown above, where MSE is equal in both modified images but SSI is notable higher for the second. As example from the HCC-TACE database, the closest image found for the section with most tumor visible is shown below. 
+A very clear example from the [scikit-image documentation](https://scikit-image.org/docs/stable/auto_examples/transform/plot_ssim.html) is shown above, where MSE is equal in both modified images but SSIM is notably higher for the second. As example from the HCC-TACE database, the closest image found for the section with most tumor visible is shown below. 
 
 ![Untitled](readme_images/closest_img.png)
 
@@ -53,10 +53,20 @@ Once the closest image has been found for every sample, the next step is to dete
 
 For the given tumor mass, adding the margins, the window obtained is the follwing for the post-treatment scan. As it can be seen, the tumor is not centered, due to some of the factors mentioned before. 
 
-IMAGEN WINDOW
 
-Once a the window is done for the last scan, the next objective is to segment the tumor to be able to compare against the pre-treatment size. Alinear imágenes ?? Given the image, it is clear that the tumor has a different texture than the rest of the body. The approach taken is to use an edge detector to capture this difference, in this case the Canny edge detector. 
+![Window contour](readme_images/window_tumor.png)
 
-As seen in the image, this results in a concentration of edges in the tumor area, that are then grouped to define a mask around the cancerous mass. 
 
-Some of the post-treatment CT scans are done with contrast and the tumor is distiguishible from the background in a clear way. For this, method the patient number 26 is used.
+Once a the window is done for the last scan, the next objective is to segment the tumor to be able to compare against the pre-treatment size. 
+Following this patient's scan, it is clear that the tumor has a different texture than the rest of the body. The approach taken is to use an edge detector to capture this difference, in this case the Canny edge detector. The objective is to then search the an area with more concentrated edges, this will limit the performance in cases in which the tumor appears to have a smooth texture in the scans. The results for the chosen patient can be seen below. 
+
+![Edge detection](readme_images/edge_detect.png)
+
+
+
+Once the edges are generated, the are dilated in order to group them for later finding the maximum contour. Once the contour has been found we have a segmentation for the tumor in the post scan, and we can compare how it has changed after treating the patient. Below is the results for the chosen patient, which according to the presented method resulted in a 42% size reduction in the tumor mass. 
+
+![Tumor comparison](readme_images/tumor_comparison.png)
+
+
+---
