@@ -39,7 +39,7 @@ This method is developed with a chosen sample, in this case, 26.
 
 For the first step, the segmentation mask corresponding to the tumor with the highest pixel count is searched, and then the corresponding pre-treatment scan is searched with a UID code. 
 
-The next step is to find a section in the post-treatment scan at ideally the same section in the body of the patient, but realistically in the closest match. To find this match, at first, methods like SIFT were used to try to find RELEVANT POINTS? but due to it’s poor performance, the final method chosen was Structural Similarity Index (SSI), which accounts for texture as well as pixel difference. 
+The next step is to find a section in the post-treatment scan at ideally the same section in the body of the patient, but realistically in the closest match. The method used was Structural Similarity Index Measure (SSIM), which accounts for texture as well as pixel difference. 
 
 ![Untitled](readme_images/ssim.png)
 
